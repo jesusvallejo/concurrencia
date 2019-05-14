@@ -8,29 +8,20 @@ public class EnclavamientoMonitor implements Enclavamiento {
   boolean presencia;
   int [] tren= {0,0,0,0};
   Control.Color [] color = {Color.VERDE,Color.VERDE,Color.VERDE,Color.VERDE};
+  Monitor.Cond cFreno = new EnclavamientoMonitor().mutex.newCond();
+  Monitor.Cond cBarrera = new EnclavamientoMonitor().mutex.newCond();
+  Monitor.Cond [] cSemaforos = {new EnclavamientoMonitor().mutex.newCond(),new EnclavamientoMonitor().mutex.newCond(),new EnclavamientoMonitor().mutex.newCond()};
   
-  private boolean invariante() {
-	  if (tren[1]>= 0 && tren[2]>= 0 && ColoresCorrectos()) {
-		  return true;
-	  }
-	  
-	return false;  
-  }
   
   @Override
   public void avisarPresencia(boolean presencia) {
     mutex.enter();
-    
-
-    if(invariante()) {
-    
     // chequeo de la PRE: no hay
     // chequeo de la CPRE y posible bloqueo: siempre cierto
     // implementacion de la POST
     this.presencia = presencia;
     //this.tren= tren; no es necesario porque no cambia
     ColoresCorrectos();	
-    }
     // codigo de desbloqueo
     mutex.leave();
   }
@@ -99,7 +90,7 @@ public class EnclavamientoMonitor implements Enclavamiento {
   
   
   
-  private boolean ColoresCorrectos() {
+  private void ColoresCorrectos() {
 	  if (tren[1]>0) {
 		  color[1]=Color.ROJO; 
 	  }
@@ -107,8 +98,7 @@ public class EnclavamientoMonitor implements Enclavamiento {
 		  color[1]=Color.AMARILLO; 
 	  }
 	  if (tren[1] == 0 && tren[2] == 0 && !presencia) {
-		  color[1]= Color.VERDE;
-		  
+		  color[1]= Color.VERDE;  
 	  }
 	  if (tren[2]>0 || presencia) {
 		  color[2]= Color.ROJO;
@@ -117,7 +107,6 @@ public class EnclavamientoMonitor implements Enclavamiento {
 		  color[2]= Color.VERDE;
 	  }
 	  color[3]= Color.VERDE;
-	  return true;
 	  }
  
 }
