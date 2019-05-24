@@ -1,4 +1,4 @@
-// Grupo: Jesus Vallejo Collados(x150319), David Martin Matamala(z170141)
+// Grupo: Jesus Vallejo Collados(x150319)
 
 import es.upm.babel.cclib.Monitor;
 
